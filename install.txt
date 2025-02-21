@@ -1,0 +1,13 @@
+board 프로젝트
+react 18버전 사용(19 쓰려고 했는데 recoil 에러 뜸 엌)
+
+npm install react@18 react-dom@18
+
+npm install
+npm install react-router-dom recoil @tanstack/react-query @emotion/react axios
+npm install react-icons --save
+
+extentions >> color picker 검색 >> VSCode Color Picker (MarkosTh09) install
+*
+npm start 가 아닌
+npm run dev 가 서버 실행 명령문임
