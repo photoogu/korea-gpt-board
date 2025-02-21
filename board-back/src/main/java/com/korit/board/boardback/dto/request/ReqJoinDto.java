@@ -1,4 +1,4 @@
-package com.korit.boardback.dto.request;
+package com.korit.board.boardback.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

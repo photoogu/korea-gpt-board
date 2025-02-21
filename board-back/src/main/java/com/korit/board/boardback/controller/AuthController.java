@@ -1,6 +1,6 @@
-package com.korit.boardback.controller;
+package com.korit.board.boardback.controller;
 
-import com.korit.boardback.dto.request.ReqJoinDto;
+import com.korit.board.boardback.dto.request.ReqJoinDto;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

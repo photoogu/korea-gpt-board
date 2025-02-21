@@ -1,4 +1,4 @@
-package com.korit.boardback;
+package com.korit.board.boardback;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

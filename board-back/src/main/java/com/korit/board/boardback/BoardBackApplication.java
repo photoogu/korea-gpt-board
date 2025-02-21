@@ -1,4 +1,4 @@
-package com.korit.boardback;
+package com.korit.board.boardback;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

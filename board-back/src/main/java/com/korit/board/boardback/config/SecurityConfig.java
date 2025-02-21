@@ -1,4 +1,4 @@
-package com.korit.boardback.config;
+package com.korit.board.boardback.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

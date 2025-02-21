@@ -1,4 +1,4 @@
-package com.korit.boardback.config;
+package com.korit.board.boardback.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import org.springframework.context.annotation.Bean;
