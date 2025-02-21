@@ -23,3 +23,15 @@ export const basicButton = css`
         background-color: #00000022;
     }
 `;
+
+export const emptyButton = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    background-color: transparent;
+    font-size: 1.6rem;
+    font-weight: 600;
+    cursor: pointer;
+`;
