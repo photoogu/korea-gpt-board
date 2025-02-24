@@ -30,7 +30,7 @@ server:
 react:
   server:
     protocol: https
-    host: ??? ?? ?? ??(ip ?? ???)
+    host: 리액트 서버 배포 주소(ip 또는 도메인)
     port: 5173
 
 ---
