@@ -6,6 +6,7 @@ npm install react@18 react-dom@18
 npm install
 npm install react-router-dom recoil @tanstack/react-query @emotion/react axios
 npm install react-icons --save
+npm install sweetalert2
 
 extentions >> color picker 검색 >> VSCode Color Picker (MarkosTh09) install
 *

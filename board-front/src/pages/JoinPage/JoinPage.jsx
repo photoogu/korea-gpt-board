@@ -18,12 +18,12 @@ function JoinPage(props) {
         passwordCheck: "",
     });
     
-        const handleInputOnChange = (e) => {
-            setInputValue(prev => ({
-                ...prev,
-                [e.target.name]: e.target.value,
-            }));
-        }
+    const handleInputOnChange = (e) => {
+        setInputValue(prev => ({
+            ...prev,
+            [e.target.name]: e.target.value,
+        }));
+    }
     
     const [ inputValidError, setInputValidError ] = useState({
         username: false,

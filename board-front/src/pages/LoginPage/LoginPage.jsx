@@ -1,9 +1,73 @@
 /**@jsxImportSource @emotion/react */
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import * as s from './style';
 import { SiGoogle, SiKakao, SiNaver } from "react-icons/si";
+import { useState } from 'react';
+import { useLoginMutation } from '../../mutations/authMutation';
+import Swal from 'sweetalert2';
+import { setTokenLocalStorage } from '../../configs/axiosConfig';
+import { useUserMeQuery } from '../../queries/userQuery';
 
 function LoginPage(props) {
+    const loginMutation = useLoginMutation();
+    const navigate = useNavigate();
+    const loginUser = useUserMeQuery();
+
+    const [ searchParams, setSearchParams ] = useSearchParams();
+    
+    const [ inputValue, setInputValue ] = useState({
+        username: searchParams.get("username") || "",
+        password: "",
+    });
+
+    const handleInputOnChange = (e) => {
+        setInputValue(prev => ({
+            ...prev,
+            [e.target.name]: e.target.value,
+        }));
+    }
+    
+    const isEmpty = () => {
+        const isEmptyInBox = Object.values(inputValue).map(value => !!value).includes(false);
+
+        return isEmptyInBox;
+    }
+
+    const handleLoginOnClick = async () => {
+        if(isEmpty()) {
+            await Swal.fire({
+                title: '로그인 실패',
+                text: '사용자 정보를 입력해주세요!',
+                confirmButtonText: '확인',
+                confirmButtonColor: "#e22323"
+            });
+            return;
+        }
+
+        try {
+            const response = await loginMutation.mutateAsync(inputValue);
+            const tokenName = response.data.name;
+            const accessToken = response.data.token;
+            setTokenLocalStorage(tokenName, accessToken);
+            await Swal.fire({
+                icon: "success",
+                text: "로그인 성공",
+                timer: 1000,
+                position: "center",
+                showConfirmButton: false,
+            });
+            loginUser.refetch();
+            navigate("/");
+        } catch(error) {
+            await Swal.fire({
+                title: '로그인 실패',
+                text: '사용자 정보를 다시 확인해주세요!',
+                confirmButtonText: '확인',
+                confirmButtonColor: "#e22323"
+            });
+        }
+    }
+
     return (
         <div css={s.layout}>
             <div>
@@ -34,16 +98,24 @@ function LoginPage(props) {
                     </div>
                     <div>
                         <div css={s.groupBox}>
-                            <input css={s.textInput} type="text" placeholder='Enter your email address...' />
+                            <input css={s.textInput} type="text" placeholder='Enter your username...'
+                                name="username"
+                                value={inputValue.username}
+                                onChange={handleInputOnChange}
+                            />
                         </div>
                         <div css={s.groupBox}>
-                            <input css={s.textInput} type="password" placeholder='password...' />
+                            <input css={s.textInput} type="password" placeholder='password...'
+                                name="password"
+                                value={inputValue.password}
+                                onChange={handleInputOnChange}
+                            />
                         </div>
                         <p css={s.accountMessage}>
                             계정이 없으시다면 지금 가입하세요. <Link to={"/auth/join"}>회원가입</Link>
                         </p>
                         <div css={s.groupBox}>
-                            <button css={s.accountButton}>Login</button>
+                            <button css={s.accountButton} onClick={handleLoginOnClick}>Login</button>
                         </div>
                     </div>
                     <div></div>

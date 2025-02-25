@@ -2,19 +2,23 @@
 import * as s from './style';
 
 function ValidInput({
-    type,
-    name,
-    placeholder,
+    type = "text",
+    name = "",
+    placeholder = "",
     value,
-    onChange,
+    onChange = null,
     onFocus = null,
-    regexp,
-    errorMessage,
-    inputValidError,
-    setInputValidError
+    regexp = null,
+    errorMessage = "",
+    inputValidError = null,
+    setInputValidError = null
 }) {
     
     const handleOnBlur = () => {
+        if(!regexp) {
+            return;
+        }
+
         setInputValidError(prev => ({
             ...prev,
             [name]: !regexp.test(value), // 외부에서 받아오는 name 대신 e 를 받아와서 e.target.name 으로 해도 됨
@@ -33,6 +37,7 @@ function ValidInput({
                 onBlur={handleOnBlur}
             />
             {
+                !!inputValidError &&
                 !!inputValidError[name] &&
                 <p css={s.messageText}>{errorMessage}</p>
             }

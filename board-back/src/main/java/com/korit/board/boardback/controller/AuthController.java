@@ -1,6 +1,8 @@
 package com.korit.board.boardback.controller;
 
 import com.korit.board.boardback.dto.request.ReqJoinDto;
+import com.korit.board.boardback.dto.request.ReqLoginDto;
+import com.korit.board.boardback.dto.response.RespTokenDto;
 import com.korit.board.boardback.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,20 @@ public class AuthController {
 
     @Operation(summary = "로그인" ,description = "로그인 설명")
     @PostMapping("/login")
-    public ResponseEntity<?> login() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> login(@RequestBody ReqLoginDto dto) {
+        /*
+         * UserService -> login()
+         * User 객체 findByUsername
+         * user 가 있으면 비밀번호 일치하는지 확인
+         * 비밀번호가 일치하면 JWT 응답
+         * JwtUtil -> secret 세팅
+         * */
+        RespTokenDto respTokenDto = RespTokenDto.builder()
+                .type("JWT")
+                .name("AccessToken")
+                .token(userService.login(dto))
+                .build();
+
+        return ResponseEntity.ok().body(respTokenDto);
     }
 }
