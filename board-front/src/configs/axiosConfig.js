@@ -15,7 +15,7 @@ api.interceptors.request.use(config => {
 export const setTokenLocalStorage = (name, token) => {
     if(!!token) {
         localStorage.setItem(name, token);
-    } else {
+    } else {    // token 이 없으면 해당 name 의 기존 토큰을 지움
         localStorage.removeItem(name);
     }
 }

@@ -6,12 +6,12 @@ import { useState } from 'react';
 import { useLoginMutation } from '../../mutations/authMutation';
 import Swal from 'sweetalert2';
 import { setTokenLocalStorage } from '../../configs/axiosConfig';
-import { useUserMeQuery } from '../../queries/userQuery';
+import { useQueryClient } from '@tanstack/react-query';
 
 function LoginPage(props) {
-    const loginMutation = useLoginMutation();
     const navigate = useNavigate();
-    const loginUser = useUserMeQuery();
+    const queryClient = useQueryClient();
+    const loginMutation = useLoginMutation();
 
     const [ searchParams, setSearchParams ] = useSearchParams();
     
@@ -56,8 +56,11 @@ function LoginPage(props) {
                 position: "center",
                 showConfirmButton: false,
             });
-            loginUser.refetch();
+            await queryClient.invalidateQueries({queryKey: ["userMeQuery"]}); // 캐시를 삭제하는 것이 아닌 만료를 시켜 fresh 하지 않은 상태로 바꿔줌(invalidate)
             navigate("/");
+            // window.location.href("/");
+            // navigate("/") 를 사용하면 위에서 이미 queryClient의 데이터를 지웠기 때문에 home 화면으로 갔다가 다시 로그인 창으로 오게 됨
+            // 하지만 await 을 걸어주어 동기로 동작하게 되면 navigate 가 비동기이기 때문에 home 화면으로 갈 수 있음
         } catch(error) {
             await Swal.fire({
                 title: '로그인 실패',

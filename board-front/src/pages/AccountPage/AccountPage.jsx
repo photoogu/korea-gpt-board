@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useUpdateNicknameMutation, useUpdateProfileImgMutation } from '../../mutations/accountMutation';
 import ReactModal from 'react-modal';
 import PasswordModal from '../../components/auth/PasswordModal/PasswordModal';
+import { api } from '../../configs/axiosConfig';
 
 function AccountPage(props) {
     const loginUser = useUserMeQuery();
@@ -70,7 +71,7 @@ function AccountPage(props) {
                         <h3 css={s.subTitle}>Email</h3>
                         <p css={s.subContent}>{loginUser?.data?.data.email}</p>
                     </div>
-                    <button css={s.borderButton}>Change email</button>
+                    <button css={s.borderButton} onClick={() => api.post("/api/auth/email", {email: "hanigirl0@naver.com"})}>Change email</button>
                 </div>
                 <div css={s.itemGroup}>
                     <div>

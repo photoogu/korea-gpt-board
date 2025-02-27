@@ -33,6 +33,8 @@ public class UserService {
     private UserRoleRepository userRoleRepository;
     @Autowired
     private FileService fileService;
+    @Autowired
+    private EmailService emailService;
 
     public boolean duplicatedByUsername(String username) {
         return userRepository.findByUsername(username).isPresent();
@@ -54,7 +56,7 @@ public class UserService {
                 .accountExpired(1)
                 .accountLocked(1)
                 .credentialsExpired(1)
-                .accountEnabled(1)
+                .accountEnabled(0)
                 .build();
         userRepository.save(user);
 
@@ -64,6 +66,11 @@ public class UserService {
                 .build();
         userRoleRepository.save(userRole);
 
+        try { // 계정 생성하면 인증 메일 보내주기! 근데 메일이 전송 안됐다고 회원가입 실패하면 안되니까, 메서드에 throws 로 예외 처리하지 않고 try-catch 사용!
+            emailService.sentAuthMail(reqJoinDto.getEmail(), reqJoinDto.getUsername());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return user;
     }
 
@@ -98,5 +105,11 @@ public class UserService {
     @Transactional(rollbackFor = Exception.class)
     public void updateNickname(User user, String nickname) {
         userRepository.updateNickname(user.getUserId(), nickname);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void updatePassword(User user, String password) {
+        String encodedPassword = passwordEncoder.encode(password);  // password 는 encoding 이 필요함
+        userRepository.updatePassword(user.getUserId(), encodedPassword);
     }
 }
