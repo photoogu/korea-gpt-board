@@ -4,6 +4,7 @@ import com.korit.board.boardback.dto.request.ReqAuthEmailDto;
 import com.korit.board.boardback.dto.request.ReqJoinDto;
 import com.korit.board.boardback.dto.request.ReqLoginDto;
 import com.korit.board.boardback.dto.response.RespTokenDto;
+import com.korit.board.boardback.entity.User;
 import com.korit.board.boardback.service.EmailService;
 import com.korit.board.boardback.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,18 +49,17 @@ public class AuthController {
     }
 
     @PostMapping("/email")
-    public ResponseEntity<?> sendAuthEmail(@RequestBody ReqAuthEmailDto dto) throws MessagingException {
-        emailService.sentAuthMail(dto.getEmail(), dto.getUsername());
+    public ResponseEntity<?> sendAuthEmail(@RequestBody ReqAuthEmailDto dto) throws Exception {
+        User user = userService.getUserByUsername(dto.getUsername())       ;
+        emailService.sentAuthMail(user.getEmail(), dto.getUsername());
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/email")
     public ResponseEntity<?> setAuthEmail(
-            @RequestPart String username,
-            @RequestPart String token
+            @RequestParam String username,
+            @RequestParam String token
     ) {
-        emailService.auth(username, token);
-
         // window.close() : 인증 절차 모두 마치고 나면(전송된 메일의 인증하기 버튼 누르면) 창이 뜸 >> 이 창을 닫아야함
         String script = String.format("""
             <script>
@@ -67,6 +67,7 @@ public class AuthController {
                 window.close();
             </script>
         """, emailService.auth(username, token));
+
         return ResponseEntity.ok().header("Content-Type", "text/html;charset=utf-8").body(script);
     }
 }

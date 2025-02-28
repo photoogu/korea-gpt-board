@@ -8,7 +8,9 @@ import Swal from 'sweetalert2';
 
 
 function PasswordModal({ setOpen }) {
+
     const passwordMutation = useUpdatePasswordMutation();
+    
     const[ passwordValue, setPasswordValue ] = useState({
         newPassword: "",
         confirmPassword: "",
@@ -64,7 +66,7 @@ function PasswordModal({ setOpen }) {
                     css={s.setButton}
                     disabled={!passwordValue.newPassword || !passwordValue.confirmPassword}
                     onClick={handleSaveButtonOnClick}
-                >Save</button>
+                >Set a password</button>
             </div>
         </div>
     );

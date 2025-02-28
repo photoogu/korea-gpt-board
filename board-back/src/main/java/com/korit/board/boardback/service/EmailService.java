@@ -8,6 +8,7 @@ import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,9 +28,10 @@ public class EmailService {
     @Autowired
     private UserRepository userRepository;
 
+    @Async
     public void sentAuthMail(String to, String username) throws MessagingException {
         String emailToken = jwtUtil.generateToken(null, null, new Date(new Date().getTime() + 1000l * 60 * 5));
-        String href = "http://localhost:8080/auth/email?username=" + username + "&token=" + emailToken;
+        String href = "http://localhost:8080/api/auth/email?username=" + username + "&token=" + emailToken;
 
         final String SUBJECT = "[board_project] 계정 활성화 인증 메일입니다.";
         String content = String.format("""        

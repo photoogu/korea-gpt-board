@@ -6,12 +6,14 @@ import { useUpdateNicknameMutation, useUpdateProfileImgMutation } from '../../mu
 import ReactModal from 'react-modal';
 import PasswordModal from '../../components/auth/PasswordModal/PasswordModal';
 import { api } from '../../configs/axiosConfig';
+import ChangeEmailModal from '../../components/auth/ChangeEmailModal/ChangeEmailModal';
 
 function AccountPage(props) {
     const loginUser = useUserMeQuery();
     const updateProfileImgMutation = useUpdateProfileImgMutation();
     const updateNicknameMutation = useUpdateNicknameMutation();
-    
+
+    const [ emailModalOpen, setEmailModalOpen ] = useState(false);
     const [ passwordModalOpen, setPasswordModalOpen ] = useState(false);
     const [ nicknameValue, setNicknameValue ] = useState("");
 
@@ -43,6 +45,9 @@ function AccountPage(props) {
     const handleChangePasswordButtonOnClick = () => {
         setPasswordModalOpen(true);
     }
+    const handleChangeEmailButtonOnClick = () => {
+        setEmailModalOpen(true);
+    }
 
     return (
         <div css={s.container}>
@@ -71,16 +76,39 @@ function AccountPage(props) {
                         <h3 css={s.subTitle}>Email</h3>
                         <p css={s.subContent}>{loginUser?.data?.data.email}</p>
                     </div>
-                    <button css={s.borderButton} onClick={() => api.post("/api/auth/email", {email: "hanigirl0@naver.com"})}>Change email</button>
+                    <button css={s.borderButton} onClick={handleChangeEmailButtonOnClick}>Change email</button>
                 </div>
-                <div css={s.itemGroup}>
-                    <div>
-                        <h3 css={s.subTitle}>Password</h3>
-                        <p css={s.subContent}>계정에 로그인 할 영구 비밀번호를 설정합니다.</p>
+                {
+                    !!loginUser?.data?.data.oauth2Name ||
+                    <div css={s.itemGroup}>
+                        <div>
+                            <h3 css={s.subTitle}>Password</h3>
+                            <p css={s.subContent}>계정에 로그인 할 영구 비밀번호를 설정합니다.</p>
+                        </div>
+                        <button css={s.borderButton} onClick={handleChangePasswordButtonOnClick}>Change password</button>
                     </div>
-                    <button css={s.borderButton} onClick={handleChangePasswordButtonOnClick}>Change password</button>
-                </div>
+                }
+                
             </div>
+            <ReactModal
+                isOpen={emailModalOpen}
+                onRequestClose={() => setEmailModalOpen(false)}
+                style={{
+                    overlay: {
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        backgroundColor: "#00000088"
+                    },
+                    content: {
+                        position: "static",
+                        boxSizing: "border-box",
+                        borderRadius: "1.5rem",
+                        width: "37rem",
+                    }
+                }}
+                children={<ChangeEmailModal setOpen={setEmailModalOpen} />}
+            />
             <ReactModal
                 isOpen={passwordModalOpen}
                 onRequestClose={() => setPasswordModalOpen(false)}
