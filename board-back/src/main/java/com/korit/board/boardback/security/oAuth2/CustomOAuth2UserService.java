@@ -32,7 +32,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         String email = null;
         String oauth2Name = null;
         String oauth2Provider = userRequest.getClientRegistration().getRegistrationId();
-        System.out.println(oauth2Provider);
         Map<String, Object> attributes = getDefaultOAuth2User(userRequest).getAttributes();
         if(oauth2Provider.equalsIgnoreCase("naver")) {
             attributes = (Map<String, Object>) attributes.get("response");

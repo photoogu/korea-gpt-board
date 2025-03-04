@@ -5,6 +5,7 @@ import MainSidebar from '../../components/common/MainSidebar/MainSidebar'
 import MainContainer from '../../components/common/MainContainer/MainContainer'
 import NotFoundPage from '../../pages/NotFoundPage/NotFoundPage';
 import { useQueryClient } from '@tanstack/react-query';
+import BoardWritePage from '../../pages/BoardWritePage/BoardWritePage';
 
 function MainRoute(props) {
     const navigate = useNavigate();
@@ -25,6 +26,7 @@ function MainRoute(props) {
         <MainContainer>
             <Routes>
                 <Route path="/account/setting" element={<AccountPage />} />
+                <Route path="/board/write/:categoryName" element={<BoardWritePage />} />
                 <Route path="/*" element={<NotFoundPage />} />
             </Routes>
         </MainContainer>

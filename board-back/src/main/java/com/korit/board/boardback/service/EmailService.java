@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class EmailService {
@@ -87,5 +88,31 @@ public class EmailService {
         }
 
         return responseMessage;
+    }
+
+    public String generateEmailCode() {
+        Random random = new Random();
+        return String.valueOf(random.nextInt(1000000));
+    }
+
+    @Async
+    public void sendChangeEmailVerification(String to, String code) throws MessagingException {
+        final String SUBJECT = "[board_project] 계정 활성화 인증 메일입니다.";
+        String content = String.format("""        
+            <html lang="ko">
+            <head>
+                <meta charset="UTF-8">
+            </head>
+            <body>
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <h1>계정 활성화</h1>
+                    <p>계정 활성화를 하시려면 아래의 인증 코드 번호를 확인하세요.</p>
+                    <h3 style="background-color: #2383e2; color:#ffffff; margin: 20px 0">%s</h3>
+                </div>
+            </body>
+            </html>
+        """, code);
+
+        sendMail(to, SUBJECT, content);
     }
 }

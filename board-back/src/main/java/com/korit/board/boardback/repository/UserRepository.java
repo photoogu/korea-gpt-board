@@ -41,4 +41,7 @@ public class UserRepository {
     public void updateAccountEnabled(String username) {
         userMapper.updateAccountEnabledByUsername(username);
     }
+    public void updateEmail(int userId, String email) {
+        userMapper.updateEmailById(userId, email);
+    }
 }

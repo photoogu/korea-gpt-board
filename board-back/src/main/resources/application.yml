@@ -74,3 +74,4 @@ mybatis:
   mapper-locations:
     - /mappers/*.xml
     - /mappers/user/*.xml
+    - /mappers/board/*.xml

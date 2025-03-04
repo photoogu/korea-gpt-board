@@ -124,4 +124,9 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(password);  // password 는 encoding 이 필요함
         userRepository.updatePassword(user.getUserId(), encodedPassword);
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void updateEmail(User user, String email) {
+        userRepository.updateEmail(user.getUserId(), email);
+    }
 }
