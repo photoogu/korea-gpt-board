@@ -1,6 +1,8 @@
 package com.korit.board.boardback.controller;
 
+import com.korit.board.boardback.dto.request.ReqBoardListSearchDto;
 import com.korit.board.boardback.dto.request.ReqWriteBoardDto;
+import com.korit.board.boardback.dto.response.RespBoardListSearchDto;
 import com.korit.board.boardback.security.principal.PrincipalUser;
 import com.korit.board.boardback.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,5 +30,25 @@ public class BoardController {
     @GetMapping("/categories")
     public ResponseEntity<?> getCategories(@AuthenticationPrincipal PrincipalUser principalUser) {
         return ResponseEntity.ok().body(boardService.getBoardCategoriesByUserId(principalUser.getUser()));
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<?> searchBoardList(@ModelAttribute ReqBoardListSearchDto dto) {
+        int totalBoardListCount = boardService.getBoardListCountBySearchText(dto.getSearchText());
+        int totalPages = totalBoardListCount % dto.getLimitCount() == 0
+                ? totalBoardListCount / dto.getLimitCount()
+                : totalBoardListCount / dto.getLimitCount() + 1;
+
+        RespBoardListSearchDto respBoardListSearchDto =
+                RespBoardListSearchDto.builder()
+                        .page(dto.getPage())
+                        .limitCount(dto.getLimitCount())
+                        .totalPages(totalPages)
+                        .totalElements(totalBoardListCount)
+                        .isFirstPage(dto.getPage() == 1)
+                        .isLastPage(dto.getPage() == totalPages)
+                        .boardSearchList(boardService.getBoardListSearchBySearchOption(dto))
+                        .build();
+        return ResponseEntity.ok().body(respBoardListSearchDto);
     }
 }

@@ -30,7 +30,7 @@
         select
             bct.board_category_id as boardCategoryId,
             bct.board_category_name as boardCategoryName,
-            (select count(*) from board_tb where board_category_id = bct.board_category_id) as boardCount
+            count(*) as boardCount
         from
             board_category_tb bct
             inner join board_tb bt on(bt.board_category_id = bct.board_category_id)

@@ -1,10 +1,8 @@
 package com.korit.board.boardback.service;
 
+import com.korit.board.boardback.dto.request.ReqBoardListSearchDto;
 import com.korit.board.boardback.dto.request.ReqWriteBoardDto;
-import com.korit.board.boardback.entity.Board;
-import com.korit.board.boardback.entity.BoardCategory;
-import com.korit.board.boardback.entity.BoardCategoryAndBoardCount;
-import com.korit.board.boardback.entity.User;
+import com.korit.board.boardback.entity.*;
 import com.korit.board.boardback.repository.BoardCategoryRepository;
 import com.korit.board.boardback.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,5 +41,21 @@ public class BoardService {
 
     public List<BoardCategoryAndBoardCount> getBoardCategoriesByUserId(User user) {
         return boardCategoryRepository.findAllByUserId(user.getUserId());
+    }
+
+    @Transactional(readOnly = true) // 읽기 전용 최적화 >> 데이터의 양이 많을 때
+    public List<BoardSearch> getBoardListSearchBySearchOption(ReqBoardListSearchDto reqBoardListSearchDto) {
+        int startIndex = (reqBoardListSearchDto.getPage() - 1) * reqBoardListSearchDto.getLimitCount();
+        return boardRepository.findBoardListAllBySearchOption(
+                startIndex,
+                reqBoardListSearchDto.getLimitCount(),
+                reqBoardListSearchDto.getOrder(),
+                reqBoardListSearchDto.getSearchText()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public int getBoardListCountBySearchText(String searchText) {
+        return boardRepository.findBoardCountAllBySearchText(searchText);
     }
 }
