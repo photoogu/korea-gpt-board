@@ -34,6 +34,10 @@ export const groupLayout = css`
     &:hover {
         background-color: #00000017;
     }
+
+    & > a {
+        text-decoration: none;
+    }
 `;
 
 export const topGroup = css`

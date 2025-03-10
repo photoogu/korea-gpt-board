@@ -8,13 +8,23 @@ import { FcLike } from 'react-icons/fc';
 import { GoChevronLeft, GoChevronRight } from 'react-icons/go';
 import { useSearchParams } from 'react-router-dom';
 import { useGetSearchBoardList } from '../../queries/boardQuery';
+import { useEffect, useState } from 'react';
 
 function BoardListPage(props) {
     const [ searchParams, setSearchParams ] = useSearchParams();
     const page = parseInt(searchParams.get("page") || "1");
     const order = searchParams.get("order") || "recent";
     const searchText = searchParams.get("searchText") || "";
-    const searchBoardList = useGetSearchBoardList();
+    
+    const searchBoardList = useGetSearchBoardList({
+        page,
+        limitCount: 15,
+        order,
+        searchText,
+    });
+
+    const [ pageNumbers, setPageNumbers ] = useState([]);
+    const [ searchInputValue, setSearchInputValue ] = useState(searchText);
 
     const orderSelectOptions = [
         {label: "최근 게시글", value: "recent"},
@@ -24,6 +34,50 @@ function BoardListPage(props) {
         {label: "좋아요 많은 순", value: "likesDesc"},
         {label: "좋아요 적은 순", value: "likesAsc"},
     ];
+
+    useEffect(() => {
+        if(!searchBoardList.isLoading){
+            const currentPage = searchBoardList?.data?.data.page || 1;
+            const totalPages = searchBoardList?.data?.data.totalPages || 1;
+            const startIndex = (Math.floor((currentPage - 1) / 5) * 5) + 1;
+            const endIndex = startIndex + 4 > totalPages ? totalPages : startIndex + 4;
+            
+            let newPageNumbers = [];
+            for(let i = startIndex; i <= endIndex; i++) {
+                newPageNumbers = [...newPageNumbers, i];
+            }
+            setPageNumbers(newPageNumbers);
+        }
+        console.log(searchBoardList?.data?.data);
+        
+    }, [searchBoardList.data]);
+
+    useEffect(() => {
+        searchBoardList.refetch();
+    }, [searchParams]);
+
+    const handlePageNumbersOnClick = (pageNumber) => {
+        searchParams.set("page", pageNumber);
+        setSearchParams(searchParams);
+    };
+
+    const handleSelectOnChange = (option) => {
+        searchParams.set("order", option.value);
+        searchParams.set("page", 1);
+        setSearchParams(searchParams);
+    };
+
+    const handleSearchButtonOnClick = () => {
+        searchParams.set("searchText", searchInputValue);
+        searchParams.set("page", 1);
+        setSearchParams(searchParams);
+    }
+
+    const handleSearchInputOnKeyDown = (e) => {
+        if(e.key === "Enter") {
+            handleSearchButtonOnClick();
+        }
+    }
 
     return (
         <div css={s.container}>
@@ -45,10 +99,12 @@ function BoardListPage(props) {
                                 padding: "0.3rem",
                             }),
                         }}
+                        value={orderSelectOptions.find((option) => option.value === order)}
+                        onChange={handleSelectOnChange}
                     />
                     <div css={s.searchInputBox}>
-                        <input type="text" />
-                        <button css={emptyButton}><BiSearch /></button>
+                        <input type="text" value={searchInputValue} onChange={(e) => setSearchInputValue(e.target.value)} onKeyDown={handleSearchInputOnKeyDown} />
+                        <button css={emptyButton} onClick={handleSearchButtonOnClick}><BiSearch /></button>
                     </div>
                 </div>
             </div>
@@ -87,22 +143,21 @@ function BoardListPage(props) {
                             </li>
                         )
                     }
-                    
                 </ul>
             </div>
             <div css={s.footer}>
                 <div css={s.pageNumbers}>
-                    <div><GoChevronLeft /></div>
-                    <div css={s.pageNum(page === "1")}><span>1</span></div>
-                    <div css={s.pageNum(page === "2")}><span>2</span></div>
-                    <div css={s.pageNum(page === "3")}><span>3</span></div>
-                    <div css={s.pageNum(page === "4")}><span>4</span></div>
-                    <div css={s.pageNum(page === "5")}><span>5</span></div>
-                    <div><GoChevronRight /></div>
+                    <button disabled={searchBoardList?.data?.data.firstPage} onClick={() => handlePageNumbersOnClick(page - 1)}><GoChevronLeft /></button>
+                    {
+                        pageNumbers.map(number => 
+                            <button key={number} css={s.pageNum(page === number)} onClick={() => handlePageNumbersOnClick(number)}><span>{number}</span></button>
+                        )
+                    }
+                    <button disabled={searchBoardList?.data?.data.lastPage} onClick={() => handlePageNumbersOnClick(page + 1)}><GoChevronRight /></button>
                 </div>
             </div>
         </div>
     );
 }
 
-export default BoardListPage;
+export default BoardListPage

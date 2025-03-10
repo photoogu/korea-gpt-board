@@ -6,7 +6,7 @@ import { useRecoilState } from 'recoil';
 import { mainSidebarIsOpenState } from '../../../atoms/mainSidebar/mainSidebarAtom';
 import { LuLockKeyhole } from "react-icons/lu";
 import { BiEdit, BiLogOut } from "react-icons/bi";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { setTokenLocalStorage } from '../../../configs/axiosConfig';
 import { useQueryClient } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
@@ -73,11 +73,13 @@ function MainSidebar(props) {
                         </div>
                     </div>
                     <div css={s.groupLayout}>
-                        <button css={emptyButton}>
-                            <span>
-                                전체 게시글
-                            </span>
-                        </button>
+                        <Link to={"/board/list?page=1&order=recent&searchText="}>
+                            <button css={emptyButton}>
+                                <span>
+                                    전체 게시글
+                                </span>
+                            </button>
+                        </Link>
                     </div>
                     <div css={s.groupLayout}>
                         <button css={emptyButton}>
