@@ -51,4 +51,28 @@ public class BoardController {
                         .build();
         return ResponseEntity.ok().body(respBoardListSearchDto);
     }
+
+    @GetMapping("/{category}/list")
+    public ResponseEntity<?> searchBoardCategoryList(
+            @AuthenticationPrincipal PrincipalUser principalUser,
+            @PathVariable String category,
+            @ModelAttribute ReqBoardListSearchDto dto) {
+        int totalBoardListCount = boardService.getBoardCategoryCountByUserIdAndCategoryName(principalUser.getUser(), category);
+        int totalPages = totalBoardListCount % dto.getLimitCount() == 0
+                ? totalBoardListCount / dto.getLimitCount()
+                : totalBoardListCount / dto.getLimitCount() + 1;
+
+        RespBoardListSearchDto respBoardListSearchDto =
+                RespBoardListSearchDto.builder()
+                        .page(dto.getPage())
+                        .limitCount(dto.getLimitCount())
+                        .totalPages(totalPages)
+                        .totalElements(totalBoardListCount)
+                        .isFirstPage(dto.getPage() == 1)
+                        .isLastPage(dto.getPage() == totalPages)
+                        .nextPage(dto.getPage() != totalPages ? dto.getPage() + 1 : 0)
+                        .boardSearchList(boardService.getBoardCategoryList(principalUser.getUser(), category, dto))
+                        .build();
+        return ResponseEntity.ok().body(respBoardListSearchDto);
+    }
 }

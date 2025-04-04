@@ -31,4 +31,14 @@ public class BoardRepository {
     public int findBoardCountAllBySearchText(String searchText) {
         return boardMapper.selectBoardCountAllBySearchText(searchText);
     }
+
+    public List<BoardSearch> findBoardListAllByUserIdAndCategoryNameAndSearchOption(
+            int userId, String categoryName, int startIndex, int limitCount
+    ) {
+        return boardMapper.selectBoardListAllByUserIdAndCategoryNameAndSearchOption(userId, categoryName, startIndex, limitCount);
+    }
+
+    public int findBoardCategoryCountByUserIdAndCategoryName(int userId, String categoryName) {
+        return boardMapper.selectBoardCategoryCountAllByUserIdAndCategoryName(userId, categoryName);
+    }
 }
